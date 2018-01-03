@@ -4,7 +4,7 @@ var express = require('express');
 const socketIO = require('socket.io');
 
 const port = process.env.PORT || 3000;
-const publicPath = path.join(__dirname,'../public');
+const publicPath = path.join(__dirname, '../public');
 var app = express();
 // var server = http.createServer((req,res) => { // équivalent à app.listen
 
@@ -20,6 +20,17 @@ app.use(express.static(publicPath));
 
 io.on('connection', (socket) => { // ce qui se passe qd 1 client se connecte au serveur
     console.log('New user connected');
+
+    socket.emit('newMessage', {
+        from: 'test@example.com',
+        text: 'this is a new message send by the sever',
+        createdAt: '123'
+    });
+
+
+    socket.on('createMessage', (message) => {
+        console.log('createMessage', message);
+    });
 
     socket.on('disconnect', () => {
         console.log('Client disconnected');
