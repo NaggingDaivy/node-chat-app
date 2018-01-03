@@ -33,12 +33,13 @@ io.on('connection', (socket) => { // ce qui se passe qd 1 client se connecte au 
     socket.broadcast.emit('newMessage', generateMessage('Admin', 'New user joined'));  // envoie à tout le monde sauf le client connecté
 
 
-    socket.on('createMessage', (message) => { // socket envoie uniquement à la personne conenctée
+    socket.on('createMessage', (message, callback) => { // socket envoie uniquement à la personne conenctée, callback = acknowledgmeent
         
         console.log('createMessage', message);
 
         io.emit('newMessage', generateMessage(message.from, message.text)); // io.emit envoie à tout le monde  (y compris lui meme)
 
+        callback('This is from the sever'); // fonction qui sera triggeredd dans index.js
 
         // socket.broadcast.emit('newMessage', { // envoie le message à tout le monde SAUF à lui même
         //     from: message.from,
