@@ -21,20 +21,31 @@ app.use(express.static(publicPath));
 io.on('connection', (socket) => { // ce qui se passe qd 1 client se connecte au serveur
     console.log('New user connected');
 
-    // socket.emit('newMessage', {
-    //     from: 'test@example.com',
-    //     text: 'this is a new message send by the sever',
-    //     createdAt: '123'
-    // });
 
+    socket.emit('newMessage', { // envoie uniquement au client connecté
+        from: 'Admin',
+        text: 'Welcome to the chat app'
+    });
 
-    socket.on('createMessage', (message) => {
+    socket.broadcast.emit('newMessage', { // envoie à tout le monde sauf le client connecté
+        from: 'Admin',
+        text: 'New user joined.',
+        createdAt: new Date().getTime()
+    })
+
+    socket.on('createMessage', (message) => { // socket envoie uniquement à la personne conenctée
         console.log('createMessage', message);
-        io.emit('newMessage', {
+        io.emit('newMessage', { // io.emit envoie à tout le monde  (y compris lui meme)
             from: message.from,
             text: message.text,
-            createdAt:  new Date().getTime()
+            createdAt: new Date().getTime()
         });
+
+        // socket.broadcast.emit('newMessage', { // envoie le message à tout le monde SAUF à lui même
+        //     from: message.from,
+        //     text: message.text,
+        //     createdAt:  new Date().getTime()
+        // }); 
     });
 
     socket.on('disconnect', () => {
