@@ -21,15 +21,20 @@ app.use(express.static(publicPath));
 io.on('connection', (socket) => { // ce qui se passe qd 1 client se connecte au serveur
     console.log('New user connected');
 
-    socket.emit('newMessage', {
-        from: 'test@example.com',
-        text: 'this is a new message send by the sever',
-        createdAt: '123'
-    });
+    // socket.emit('newMessage', {
+    //     from: 'test@example.com',
+    //     text: 'this is a new message send by the sever',
+    //     createdAt: '123'
+    // });
 
 
     socket.on('createMessage', (message) => {
         console.log('createMessage', message);
+        io.emit('newMessage', {
+            from: message.from,
+            text: message.text,
+            createdAt:  new Date().getTime()
+        });
     });
 
     socket.on('disconnect', () => {
