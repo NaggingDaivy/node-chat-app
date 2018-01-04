@@ -30,7 +30,7 @@ socket.on('newMessage', function(message) {
     });
 
     var ol = document.getElementById('messages');
-    ol.innerHTML = html;
+    ol.innerHTML += html;
     
 
     //VERSION EN FULL JS SANS MUSTACHE
@@ -59,7 +59,7 @@ socket.on('newLocationMessage', function(message){
     });
 
     var ol = document.getElementById('messages');
-    ol.innerHTML = html;
+    ol.innerHTML += html;
 
 
     //VERSION EN FULL JS SANS MUSTACHE
