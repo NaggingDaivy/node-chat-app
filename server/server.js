@@ -40,7 +40,7 @@ io.on('connection', (socket) => { // ce qui se passe qd 1 client se connecte au 
 
         io.emit('newMessage', generateMessage(message.from, message.text)); // io.emit envoie à tout le monde  (y compris lui meme)
 
-        callback('This is from the sever'); // fonction qui sera triggeredd dans index.js
+        callback(); // fonction qui sera triggeredd dans index.js
  
     });
 
