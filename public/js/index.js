@@ -17,11 +17,11 @@ socket.on('disconnect', function () {
 
 
 socket.on('newMessage', function(message) {
-    console.log('New Message : ', message);
+    var formattedTime = moment(message.createdAt).format('h:mm a');
 
     // create a li tag, a text, and append text to li
     var li = document.createElement('li');
-    li.textContent = `${message.from}: ${message.text}`;
+    li.textContent = `${message.from} ${formattedTime}: ${message.text}`;
 
     // insert li into ol
     var ol = document.getElementById('messages');
@@ -32,9 +32,12 @@ socket.on('newMessage', function(message) {
 });
 
 socket.on('newLocationMessage', function(message){
+
+    var formattedTime = moment(message.createdAt).format('h:mm a');
+
     // create a li tag, a text, and append text to li
     var li = document.createElement('li');
-    li.textContent = `${message.from}:`;
+    li.textContent = `${message.from} ${formattedTime}: `;
     
     
 
@@ -55,13 +58,13 @@ socket.on('newLocationMessage', function(message){
 }),
 
 
-socket.emit('createMessage', {
-    from: 'Frank',
-    text: 'Hi'
-}, function(data) { // when acknowledgement is received by the client
+// socket.emit('createMessage', {
+//     from: 'Frank',
+//     text: 'Hi'
+// }, function(data) { // when acknowledgement is received by the client
 
-    console.log('Got it', data);
-})
+//     console.log('Got it', data);
+// })
 
 
 
