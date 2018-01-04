@@ -17,42 +17,70 @@ socket.on('disconnect', function () {
 
 
 socket.on('newMessage', function(message) {
+
     var formattedTime = moment(message.createdAt).format('h:mm a');
+    var template = document.getElementById('message-template').innerHTML;
+    console.log(template);
 
-    // create a li tag, a text, and append text to li
-    var li = document.createElement('li');
-    li.textContent = `${message.from} ${formattedTime}: ${message.text}`;
+    var html = Mustache.render(template, {
+        from: message.from,
+        text: message.text,
+        createdAt: formattedTime
 
-    // insert li into ol
+    });
+
     var ol = document.getElementById('messages');
-    ol.appendChild(li);
+    ol.innerHTML = html;
+    
 
+    //VERSION EN FULL JS SANS MUSTACHE
+    // // create a li tag, a text, and append text to li
+    // var li = document.createElement('li');
+    // li.textContent = `${message.from} ${formattedTime}: ${message.text}`;
 
-
+    // // insert li into ol
+    // var ol = document.getElementById('messages');
+    // ol.appendChild(li);
 });
 
 socket.on('newLocationMessage', function(message){
 
     var formattedTime = moment(message.createdAt).format('h:mm a');
 
-    // create a li tag, a text, and append text to li
-    var li = document.createElement('li');
-    li.textContent = `${message.from} ${formattedTime}: `;
-    
-    
+    var template = document.getElementById('location-message-template').innerHTML;
+    console.log(template);
 
-    // a href=url
-    var a = document.createElement('a');
-    a.setAttribute('target',"_blank");
-    a.setAttribute('href',message.url);
-    a.textContent = 'My current location';
+    var html = Mustache.render(template, {
+        from: message.from,
+        text: message.text,
+        url: message.url,
+        createdAt: formattedTime
 
-    li.appendChild(a);
-    
+    });
 
-    // insert li into ol
     var ol = document.getElementById('messages');
-    ol.appendChild(li);
+    ol.innerHTML = html;
+
+
+    //VERSION EN FULL JS SANS MUSTACHE
+    // // create a li tag, a text, and append text to li
+    // var li = document.createElement('li');
+    // li.textContent = `${message.from} ${formattedTime}: `;
+    
+    
+
+    // // a href=url
+    // var a = document.createElement('a');
+    // a.setAttribute('target',"_blank");
+    // a.setAttribute('href',message.url);
+    // a.textContent = 'My current location';
+
+    // li.appendChild(a);
+    
+
+    // // insert li into ol
+    // var ol = document.getElementById('messages');
+    // ol.appendChild(li);
 
 
 }),
