@@ -5,6 +5,7 @@ const socketIO = require('socket.io');
 
 
 const {generateMessage} = require('./utils/message');
+const {generateLocationMessage} = require('./utils/message');
 const publicPath = path.join(__dirname, '../public');
 const port = process.env.PORT || 3000;
 
@@ -40,12 +41,13 @@ io.on('connection', (socket) => { // ce qui se passe qd 1 client se connecte au 
         io.emit('newMessage', generateMessage(message.from, message.text)); // io.emit envoie à tout le monde  (y compris lui meme)
 
         callback('This is from the sever'); // fonction qui sera triggeredd dans index.js
+ 
+    });
 
-        // socket.broadcast.emit('newMessage', { // envoie le message à tout le monde SAUF à lui même
-        //     from: message.from,
-        //     text: message.text,
-        //     createdAt:  new Date().getTime()
-        // }); 
+    socket.on('createLocationMessage',(coords) => {
+
+        io.emit('newLocationMessage', generateLocationMessage('Admin', coords.latitude, coords.longitude));
+
     });
 
     socket.on('disconnect', () => {
