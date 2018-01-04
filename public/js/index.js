@@ -1,5 +1,47 @@
 var socket = io(); // initiating request
 
+
+// AUTOMATIC SCROLL
+function scrollToBottom() {
+    // SELECTORS
+    var messages = document.getElementById('messages');
+    var newMessage = messages.lastElementChild; // on prend le dernier message arrivé
+    var lastMessage = messages.children[messages.children.length - 2]; // message avant le new Message
+    
+    
+    // HEIGHTS
+    var clientHeight = messages.clientHeight; // ce que voit le client
+    // console.log('messages.clientHeight', clientHeight);
+
+    var scrollTop = messages.scrollTop; // valeur de scroll depuis le haut 
+    // console.log('messages.scrollTop',scrollTop);
+
+    var scrollHeight = messages.scrollHeight; // taille totale du conatainer avec tout le scroll
+    // console.log('messages.scrollHeight',scrollHeight);
+
+    var newMessageHeight =   newMessage.clientHeight;
+    // console.log('newMessageHeight',newMessageHeight);
+
+    var lastMessageHeight;
+
+    if(!lastMessage)
+        lastMessageHeight = 0; // dans le cas du premier message, lastMessage = newMessage
+    else
+        lastMessageHeight = lastMessage.clientHeight; // nécessaire pour Firefox, pas pour Chrome
+    
+        // console.log('lastMessageHeight',lastMessageHeight);
+
+    if(clientHeight + scrollTop + newMessageHeight + lastMessageHeight >= scrollHeight){
+        // console.log('Should scroll');
+        messages.scrollTop = scrollHeight;
+
+    }
+        
+
+
+
+}
+
 socket.on('connect', function () { // ce qui se passe qd 1 client se connecte au serveur
     console.log('Connected to server');
 
@@ -20,7 +62,7 @@ socket.on('newMessage', function(message) {
 
     var formattedTime = moment(message.createdAt).format('h:mm a');
     var template = document.getElementById('message-template').innerHTML;
-    console.log(template);
+   
 
     var html = Mustache.render(template, {
         from: message.from,
@@ -31,6 +73,7 @@ socket.on('newMessage', function(message) {
 
     var ol = document.getElementById('messages');
     ol.innerHTML += html;
+    scrollToBottom();
     
 
     //VERSION EN FULL JS SANS MUSTACHE
@@ -60,6 +103,7 @@ socket.on('newLocationMessage', function(message){
 
     var ol = document.getElementById('messages');
     ol.innerHTML += html;
+    scrollToBottom();
 
 
     //VERSION EN FULL JS SANS MUSTACHE
