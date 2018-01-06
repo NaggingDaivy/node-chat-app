@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node server/server.js",
-    "test": "jest --notify server/**/*.test.js",
+    "test": "jest --verbose",
     "test-watch": "nodemon --exec \"npm test\""
   },
   "engines": {

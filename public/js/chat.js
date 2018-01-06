@@ -1,3 +1,5 @@
+
+
 var socket = io(); // initiating request
 
 
@@ -45,11 +47,23 @@ function scrollToBottom() {
 socket.on('connect', function () { // ce qui se passe qd 1 client se connecte au serveur
     console.log('Connected to server');
 
-    // socket.emit('createMessage', {
-    //     from: 'daivy@example.com',
-    //     text: 'This is a message created by the client'
+    var urlSearchParams = window.location.search;
+    var searchParams = new URLSearchParams(urlSearchParams);
 
-    // });
+    var params = { name: searchParams.get('name'), room: searchParams.get('room') };
+
+    socket.emit('join',params, function(err) { // valdiation of params will be on server
+        if(err) {
+            alert(err);
+            window.location.href = '/'; // retourne au login
+        }
+        else {
+            console.log('No error');
+
+        }
+
+    });
+ 
 
 });
 
@@ -57,6 +71,23 @@ socket.on('disconnect', function () {
     console.log('Disconnected from server');
 });
 
+
+socket.on('updateUserList', function(users) {
+    // console.log('Users list', users);
+    var ol = document.createElement('ol');
+
+    users.forEach(function(user) {
+        var li = document.createElement('li');
+        li.textContent = user;
+        ol.appendChild(li);
+
+    });
+
+    console.log(ol);
+    document.getElementById('users').appendChild(ol);
+    
+
+});
 
 socket.on('newMessage', function(message) {
 
