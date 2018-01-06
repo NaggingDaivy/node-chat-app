@@ -57,9 +57,14 @@ io.on('connection', (socket) => { // ce qui se passe qd 1 client se connecte au 
 
     socket.on('createMessage', (message, callback) => { // socket envoie uniquement à la personne conenctée, callback = acknowledgmeent
         
-        console.log('createMessage', message);
+        var user = users.getUser(socket.id);
 
-        io.emit('newMessage', generateMessage(message.from, message.text)); // io.emit envoie à tout le monde  (y compris lui meme)
+        if(user && isRealString(message.text)){
+            io.to(user.room).emit('newMessage', generateMessage(user.name, message.text)); // io.emit envoie à tout le monde  (y compris lui meme)
+
+        } 
+
+       
 
         callback(); // fonction qui sera triggeredd dans index.js
  
@@ -67,7 +72,9 @@ io.on('connection', (socket) => { // ce qui se passe qd 1 client se connecte au 
 
     socket.on('createLocationMessage',(coords) => {
 
-        io.emit('newLocationMessage', generateLocationMessage('Admin', coords.latitude, coords.longitude));
+        var user = users.getUser(socket.id);
+
+        io.to(user.room).emit('newLocationMessage', generateLocationMessage(user.name, coords.latitude, coords.longitude));
 
     });
 

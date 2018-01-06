@@ -84,6 +84,7 @@ socket.on('updateUserList', function(users) {
     });
 
     console.log(ol);
+    document.getElementById('users').innerHTML = '';
     document.getElementById('users').appendChild(ol);
     
 
