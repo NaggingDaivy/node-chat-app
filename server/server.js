@@ -18,6 +18,7 @@ var app = express();
 var server = http.createServer(app);
 var io = socketIO(server); // socketIO dispo sur localhost:3000/socket.io/socket.io.js
 var users = new Users();
+var rooms = [];
 
 
 app.use(express.static(publicPath));
@@ -26,9 +27,12 @@ app.use(express.static(publicPath));
 // })
 
 io.on('connection', (socket) => { // ce qui se passe qd 1 client se connecte au serveur
-    console.log('New user connected');
+    // console.log('New user connected');
 
 
+    socket.on('getRooms',(params,callback) => {
+        callback(rooms);
+    })
 
     
     socket.on('join',(params, callback) => {
@@ -39,6 +43,12 @@ io.on('connection', (socket) => { // ce qui se passe qd 1 client se connecte au 
         users.removeUser(socket.id);
         users.addUser(socket.id,params.name,params.room);
 
+        if(!rooms.find((room) => room === params.room )) {
+            rooms.push(params.room);
+            io.emit('updateRoomList',rooms);
+        }
+            
+
 
        
         //socket.leave(params.room); // quitter une room
@@ -47,7 +57,7 @@ io.on('connection', (socket) => { // ce qui se passe qd 1 client se connecte au 
         //socket.broadcast.emit -> socket.broascast.to(params.room) va envoyer à TOUS SAUF L'user
         //socket.emit
 
-        io.to(params.room).emit('updateUserList', users.getUserList(params.room));
+        io.to(params.room).emit('updateUserList', users.getUserListByRoom(params.room));
         socket.emit('newMessage', generateMessage('Admin', 'Welcome to the chat app !')); // envoie uniquement au client connecté
         socket.broadcast.to(params.room).emit('newMessage', generateMessage('Admin', `${params.name} has joined.`));  // envoie à tout le monde sauf le client connecté
 
@@ -79,11 +89,17 @@ io.on('connection', (socket) => { // ce qui se passe qd 1 client se connecte au 
     });
 
     socket.on('disconnect', () => {
-        var user = users.removeUser(socket.id);
+        var userRemoved = users.removeUser(socket.id);
 
-        if(user) {
-            io.to(user.room).emit('updateUserList',users.getUserList(user.room))
-            io.to(user.room).emit('newMessage', generateMessage('Admin',`${user.name} has left.`));
+        if(userRemoved) {
+            io.to(userRemoved.room).emit('updateUserList',users.getUserListByRoom(userRemoved.room))
+            io.to(userRemoved.room).emit('newMessage', generateMessage('Admin',`${userRemoved.name} has left.`));
+
+            if(!users.getUserList().find((user) => user.room === userRemoved.room)){
+                rooms = rooms.filter((room) => room !== userRemoved.room)
+                io.emit('updateRoomList',rooms);
+
+            }
         }
 
     });

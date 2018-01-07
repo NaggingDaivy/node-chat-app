@@ -24,10 +24,14 @@ class Users {
         return this.users.filter((user) => user.id === id)[0];
     }
 
-    getUserList(room) {
+    getUserListByRoom(room) {
         var users = this.users.filter((user) => user.room === room) ;      
         var namesArray =  users.map((user) => user.name);
         return namesArray;
+    }
+
+    getUserList() {
+       return this.users;
     }
 
 

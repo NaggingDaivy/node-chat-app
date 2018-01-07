@@ -24,7 +24,12 @@
 
             <div class="form-field">
                 <label>Room name</label>
-                <input type="text" name="room">
+                <input type="text" name="room" id="roomInput">
+            </div>
+
+            <div class="form-field">
+                <label>Room list</label>
+                <select name="roomList" id="roomListSelect"></select>
             </div>
 
             <div class="form-field">
@@ -38,6 +43,8 @@
     </div>
 
 
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/js/index.js"></script>
 </body>
 
 </html>
